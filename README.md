@@ -1,6 +1,6 @@
-# Klondike Solitaire
+# Vibe Solitaire
 
-A web-based implementation of Klondike Solitaire using modern web technologies.
+A vibe-coded, web-based implementation of Klondike Solitaire using modern web technologies.
 
 ## Features
 
