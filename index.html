@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Klondike Solitaire</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="game-container">
+        <div class="game-area">
+            <div class="top-section">
+                <div class="deck-area">
+                    <div id="deck" class="card-stack"></div>
+                    <div id="waste" class="card-stack"></div>
+                </div>
+                <div class="foundation-area">
+                    <div id="foundation-0" class="foundation card-stack"></div>
+                    <div id="foundation-1" class="foundation card-stack"></div>
+                    <div id="foundation-2" class="foundation card-stack"></div>
+                    <div id="foundation-3" class="foundation card-stack"></div>
+                </div>
+            </div>
+            <div class="tableau-area">
+                <div id="tableau-0" class="tableau card-stack"></div>
+                <div id="tableau-1" class="tableau card-stack"></div>
+                <div id="tableau-2" class="tableau card-stack"></div>
+                <div id="tableau-3" class="tableau card-stack"></div>
+                <div id="tableau-4" class="tableau card-stack"></div>
+                <div id="tableau-5" class="tableau card-stack"></div>
+                <div id="tableau-6" class="tableau card-stack"></div>
+            </div>
+        </div>
+        <div class="controls-area">
+            <button id="new-game" class="new-game-btn">New Game</button>
+        </div>
+    </div>
+    <div id="win-message" class="win-message">
+        <div class="win-content">
+            <h2>Congratulations!</h2>
+            <p>You've won the game!</p>
+            <button onclick="startNewGame()">Play Again</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html> 
