@@ -2,14 +2,13 @@
     --card-width: 100px;
     --card-height: 140px;
     --stack-offset: 30px;
-    --waste-offset: 8px;
 }
 
 body {
     margin: 0;
     padding: 20px;
     background: #2c8a3d;
-    font-family: Arial, sans-serif;
+    font-family: 'Segoe UI', Arial, sans-serif;
     min-height: 100vh;
     display: flex;
     justify-content: center;
@@ -26,15 +25,17 @@ body {
 
 .game-area {
     flex: 1;
-    min-width: 0; /* Allows flex container to shrink below content size if needed */
+    min-width: 0;
 }
 
 .controls-area {
-    width: 120px;
+    width: 160px;
     padding: 20px;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 15px;
+    margin-top: 20px;
+    text-align: center;
 }
 
 .top-section {
@@ -67,11 +68,13 @@ body {
     border: 2px solid rgba(255, 255, 255, 0.3);
     border-radius: 8px;
     position: relative;
+    background: rgba(255, 255, 255, 0.1);
 }
 
 .tableau .card-stack {
-    height: calc(var(--card-height) + 200px);
-    min-height: var(--card-height);
+    min-height: calc(var(--card-height) + 200px);
+    height: auto;
+    padding-bottom: var(--card-height);
 }
 
 .card {
@@ -82,18 +85,41 @@ body {
     position: absolute;
     cursor: pointer;
     user-select: none;
-    transition: transform 0.2s ease;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     left: 0;
     top: 0;
     border: 1px solid rgba(0, 0, 0, 0.2);
+    background-size: 100% 100%;
+    z-index: 1;
+}
+
+.card:hover {
+    z-index: 100;
+}
+
+.card.faceup {
+    background: white;
+}
+
+.card.facedown {
+    background-image: url('assets/cards/card-back.svg');
+    background-color: #2c5aa0;
+    color: transparent;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.card.facedown .card-corner,
+.card.facedown .pip-container,
+.card.facedown .court-container {
+    display: none;
 }
 
 .card.dragging {
-    opacity: 0.8;
+    opacity: 0.9;
     transform: scale(1.05);
     z-index: 1000;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
 }
 
 .card.red {
@@ -104,50 +130,227 @@ body {
     color: #000000;
 }
 
-.card-content {
+/* Corner styling */
+.card-corner {
     position: absolute;
-    top: 8px;
-    left: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 1px;
+    background: white;
+    border-radius: 3px;
+    width: 20px;
+    z-index: 2;
+}
+
+.top-left {
+    top: 2px;
+    left: 2px;
+}
+
+.bottom-right {
+    bottom: 2px;
+    right: 2px;
+    transform: rotate(180deg);
+}
+
+.card-rank {
     font-size: 18px;
     font-weight: bold;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    line-height: 1;
+    margin-bottom: 1px;
 }
 
-.card-suit {
-    font-size: 26px;
+.card-suit-small {
+    width: 16px;
+    height: 16px;
+}
+
+/* Pip container and pips */
+.pip-container {
     position: absolute;
-    top: 30px;
-    left: 8px;
+    /* top: 10%;
+    left: 10%;
+    width: 80%;
+    height: 80%; */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 38px 20px;
+    box-sizing: border-box;
+    background: white;
+    display: grid;
+    border-radius: 8px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: repeat(5, minmax(0, 1fr));
+    gap: 0;
+    align-items: center;
+    justify-items: center;
+    z-index: 1;
 }
 
-.card.facedown {
-    background: linear-gradient(45deg, #1a237e, #3949ab);
-    color: transparent;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+.card-pip {
+    width: 14px;
+    height: 14px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-pip svg {
+    width: 100%;
+    height: 100%;
+}
+
+/* Specific pip positions for Ace */
+.pip-container[data-rank="1"] .card-pip {
+    grid-column: 2;
+    grid-row: 3;
+    width: 28px;
+    height: 28px;
+}
+
+/* Center row pips for odd-numbered cards */
+.pip-container[data-rank="3"] .card-pip:nth-child(2),
+.pip-container[data-rank="5"] .card-pip:nth-child(3),
+.pip-container[data-rank="7"] .card-pip:nth-child(4),
+.pip-container[data-rank="9"] .card-pip:nth-child(5) {
+    grid-column: 2;
+}
+
+/* Adjust spacing for specific ranks */
+.pip-container[data-rank="7"] .card-pip,
+.pip-container[data-rank="8"] .card-pip,
+.pip-container[data-rank="9"] .card-pip,
+.pip-container[data-rank="10"] .card-pip {
+    width: 12px;
+    height: 12px;
+}
+
+/* Court card styling */
+.court-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    background: white;
+    border-radius: 8px;
+    padding: 32px 10px;
+    box-sizing: border-box;
+    z-index: 1;
+}
+
+.court-figure {
+    width: 70px;
+    height: 105px;
+    filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.2));
+}
+
+.court-suit {
+    width: 16px;
+    height: 16px;
+}
+
+.court-suit-top {
+    align-self: flex-start;
+    margin-left: 8px;
+}
+
+.court-suit-bottom {
+    align-self: flex-end;
+    margin-right: 8px;
+}
+
+/* Suit colors */
+.suit-hearts, .suit-diamonds {
+    fill: #d40000;
+}
+
+.suit-clubs, .suit-spades {
+    fill: #000000;
+}
+
+.card-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card-suit-large {
+    width: 40px;
+    height: 40px;
 }
 
 .card.facedown:not(:last-child) {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.4);
 }
 
 .tableau .card:not(:first-child) {
     top: var(--stack-offset);
 }
 
-.new-game-btn {
-    padding: 10px 20px;
-    font-size: 16px;
-    background: #f0f0f0;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-    white-space: nowrap;
+.tableau .card:last-child {
+    z-index: 2;
 }
 
-.new-game-btn:hover {
-    background: #e0e0e0;
+.new-game-btn, .use-seed-btn {
+    padding: 10px 20px;
+    font-size: 14px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 120px;
+    margin: 0 auto;
+}
+
+.new-game-btn:hover, .use-seed-btn:hover {
+    background-color: #45a049;
+}
+
+.seed-control {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    align-items: center;
+}
+
+.seed-input {
+    padding: 8px 12px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 120px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.seed-input:focus {
+    border-color: #4CAF50;
+    outline: none;
+    box-shadow: 0 0 3px rgba(76, 175, 80, 0.3);
+}
+
+.use-seed-btn {
+    background-color: #2196F3;
+}
+
+.use-seed-btn:hover {
+    background-color: #1976D2;
 }
 
 .win-message {
@@ -169,41 +372,60 @@ body {
 
 .win-content {
     background: white;
-    padding: 30px;
-    border-radius: 10px;
+    padding: 40px;
+    border-radius: 12px;
     text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
 }
 
 .win-content button {
-    padding: 10px 20px;
+    padding: 12px 24px;
     font-size: 16px;
     background: #2c8a3d;
     color: white;
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: all 0.2s ease;
+    margin-top: 20px;
 }
 
 .win-content button:hover {
     background: #236e31;
+    transform: translateY(-1px);
 }
 
 .foundation .card:not(:first-child) {
     top: 0;
 }
 
+.foundation .card:last-child {
+    z-index: 2;
+}
+
+/* Waste pile styling - no offsets */
 .waste .card {
     position: absolute;
     left: 0;
-}
-
-.waste .card:not(:first-child) {
-    left: calc(var(--waste-offset) * -1);
+    top: 0;
+    z-index: 1;
+    display: none;
 }
 
 .waste .card:last-child {
-    left: 0;
+    display: block;
+    z-index: 2;
+}
+
+/* Only top card gets hover effects */
+.waste .card:last-child:not(.facedown):hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* Dragging state always on top */
+.card.dragging {
+    z-index: 1000;
 }
 
 .card.moving-to-foundation {
@@ -223,8 +445,148 @@ body {
     z-index: 1000;
 }
 
-.dragging-stack .card {
-    position: absolute;
-    transition: none;
-    transform: none;
+/* Stack positioning */
+.tableau .card:not(:last-child) {
+    cursor: default;
+}
+
+.tableau .card:not(:first-child) {
+    top: var(--stack-offset);
+}
+
+.foundation .card:not(:last-child) {
+    cursor: default;
+}
+
+/* Z-index handling */
+.card {
+    z-index: 1;
+}
+
+.card:last-child {
+    z-index: 2;
+}
+
+.card.dragging {
+    z-index: 1000;
+}
+
+/* Hover effects - only for last cards or draggable stacks */
+.tableau .card:last-child:not(.facedown):hover,
+.waste .card:last-child:not(.facedown):hover,
+.foundation .card:last-child:not(.facedown):hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    z-index: 100;
+}
+
+/* For tableau, also allow hover effect on face-up cards that can be dragged as a stack */
+.tableau .card.faceup:hover:not(:last-child) {
+    cursor: grab;
+}
+
+.tableau .card.faceup:hover:not(:last-child) ~ .card {
+    cursor: grab;
+}
+
+.card.dragging {
+    opacity: 0.9;
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+/* Empty stack hover effect */
+.card-stack:empty {
+    background: rgba(255, 255, 255, 0.15);
+    transition: background 0.2s ease, border 0.2s ease;
+}
+
+.card-stack:empty:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Stack positioning and base z-index */
+.tableau .card:not(:first-child) {
+    top: var(--stack-offset);
+}
+
+.tableau .card {
+    z-index: 1;
+}
+
+.tableau .card:nth-child(1) { z-index: 1; }
+.tableau .card:nth-child(2) { z-index: 2; }
+.tableau .card:nth-child(3) { z-index: 3; }
+.tableau .card:nth-child(4) { z-index: 4; }
+.tableau .card:nth-child(5) { z-index: 5; }
+.tableau .card:nth-child(6) { z-index: 6; }
+.tableau .card:nth-child(7) { z-index: 7; }
+.tableau .card:nth-child(8) { z-index: 8; }
+.tableau .card:nth-child(9) { z-index: 9; }
+.tableau .card:nth-child(10) { z-index: 10; }
+.tableau .card:nth-child(11) { z-index: 11; }
+.tableau .card:nth-child(12) { z-index: 12; }
+.tableau .card:nth-child(13) { z-index: 13; }
+
+.foundation .card {
+    z-index: 1;
+}
+
+.foundation .card:last-child {
+    z-index: 2;
+}
+
+/* Hover effects - only for last cards */
+.tableau .card:last-child:not(.facedown):hover,
+.waste .card:last-child:not(.facedown):hover,
+.foundation .card:last-child:not(.facedown):hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+    z-index: 100;
+}
+
+/* Dragging state */
+.card.dragging {
+    opacity: 0.9;
+    transform: scale(1.05);
+    z-index: 1000;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+.dragging-stack {
+    position: fixed;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+/* Cursor styles */
+.tableau .card:not(:last-child):not(.facedown),
+.waste .card:not(:last-child),
+.foundation .card:not(:last-child) {
+    cursor: default;
+}
+
+.tableau .card.faceup:not(.dragging) {
+    cursor: grab;
+}
+
+/* Drop target styling */
+.card-stack.valid-drop-target {
+    background: rgba(255, 255, 255, 0.3);
+    border: 2px solid rgba(255, 255, 255, 0.6);
+}
+
+/* Make sure tableau stacks are always clickable */
+.tableau .card-stack {
+    z-index: 0;
+    position: relative;
+}
+
+/* Ensure cards in tableau don't block the stack's drop target */
+.tableau .card-stack .card {
+    pointer-events: auto;
+}
+
+.tableau .card-stack {
+    pointer-events: all;
 } 

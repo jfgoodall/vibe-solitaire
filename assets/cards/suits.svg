@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="0" height="0" viewBox="0 0 50 50" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+        <!-- Gradients for suits -->
+        <linearGradient id="redGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#ff1744"/>
+            <stop offset="100%" style="stop-color:#d50000"/>
+        </linearGradient>
+        <linearGradient id="blackGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" style="stop-color:#424242"/>
+            <stop offset="100%" style="stop-color:#212121"/>
+        </linearGradient>
+        
+        <!-- Heart -->
+        <symbol id="heart" viewBox="0 0 50 50">
+            <path d="M25,45 L7,27 A12,12 0 1,1 25,13 A12,12 0 1,1 43,27 Z" 
+                  fill="url(#redGradient)" stroke="#d50000" stroke-width="1"/>
+            <path d="M15,22 A8,8 0 0,1 25,18 A8,8 0 0,1 35,22" 
+                  fill="none" stroke="#fff" stroke-width="1" opacity="0.3"/>
+        </symbol>
+        
+        <!-- Diamond -->
+        <symbol id="diamond" viewBox="0 0 50 50">
+            <path d="M25,5 L45,25 L25,45 L5,25 Z" 
+                  fill="url(#redGradient)" stroke="#d50000" stroke-width="1"/>
+            <path d="M25,10 L35,25 L25,40" 
+                  fill="none" stroke="#fff" stroke-width="1" opacity="0.3"/>
+        </symbol>
+        
+        <!-- Club -->
+        <symbol id="club" viewBox="0 0 50 50">
+            <path d="M25,45 L30,30 A12,12 0 1,0 40,20 A10,10 0 1,0 10,20 A12,12 0 1,0 20,30 Z" 
+                  fill="url(#blackGradient)" stroke="#000" stroke-width="1"/>
+            <circle cx="25" cy="20" r="3" fill="#fff" opacity="0.3"/>
+        </symbol>
+        
+        <!-- Spade -->
+        <symbol id="spade" viewBox="0 0 50 50">
+            <path d="M25,45 L30,30 A15,15 0 1,0 10,20 Q25,35 40,20 A15,15 0 1,0 20,30 Z" 
+                  fill="url(#blackGradient)" stroke="#000" stroke-width="1"/>
+            <path d="M25,15 L25,35" 
+                  fill="none" stroke="#fff" stroke-width="1" opacity="0.3"/>
+        </symbol>
+    </defs>
+</svg> 
